@@ -1,6 +1,6 @@
 /*
 /*/
 !.gitignore
-!Makefile
-!/srcs/
-!/includes/
+!/philo/Makefile
+!/philo/*.c
+!/philo/*.h
