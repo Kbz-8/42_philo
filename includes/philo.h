@@ -6,7 +6,7 @@
 /*   By: maldavid <kbz_8.dev@akel-engine.com>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/02 17:31:25 by maldavid          #+#    #+#             */
-/*   Updated: 2023/06/02 19:40:52 by maldavid         ###   ########.fr       */
+/*   Updated: 2023/06/30 01:31:38 by maldavid         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,31 +18,50 @@
 # include <string.h>
 # include <stdint.h>
 # include <unistd.h>
+# include <limits.h>
 # include <pthread.h>
 # include <stdbool.h>
-
-typedef enum e_state
-{
-	DEAD,
-	EATING,
-	SLEEPING,
-	THINKING,
-}	t_state;
+# include <sys/time.h>
 
 typedef struct s_philo
 {
-	pthread_t	thread;
-	t_state		state;
+	struct s_noodles	*noodles;
+	pthread_mutex_t		l_fork;
+	pthread_mutex_t		*r_fork;
+	pthread_t			thread;
+	long				last_eat;
+	size_t				eat_count;
+	size_t				id;
+	bool				is_eating;
 }	t_philo;
 
-typedef struct s_manager
+typedef struct s_noodles
 {
+	pthread_mutex_t	mutex_eat;
+	pthread_mutex_t	mutex_exit;
+	pthread_mutex_t	mutex_dead;
+	pthread_mutex_t	mutex_print;
 	t_philo			*philos;
-	pthread_mutex_t	*forks;
+	int64_t			start_time;
+	uint32_t		n_philos;
+	uint32_t		n_eats;
+	uint32_t		current_n_eats;
 	int32_t			numbers_philos;
 	int32_t			time_to_eat;
 	int32_t			time_to_die;
 	int32_t			time_to_sleep;
-}	t_manager;
+	bool			exit;
+}	t_noodles;
+
+long long	timestamp(void);
+void		ft_usleep(int ms);
+void		log(t_philo *philo, char *str);
+int			ft_atoi_check(const char *str, bool *check);
+bool		init_noodles(t_noodles *noodles, char **av);
+bool		init_philos(t_noodles *noodles);
+bool		end(t_noodles *noodles);
+bool		wait_for_philos(t_noodles *noodles);
+void		destroy_noodles(t_noodles *noodles);
+void		*brain(void *philo);
 
 #endif

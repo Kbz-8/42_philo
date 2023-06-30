@@ -6,7 +6,7 @@
 /*   By: maldavid <kbz_8.dev@akel-engine.com>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/02 19:55:47 by maldavid          #+#    #+#             */
-/*   Updated: 2023/06/02 21:09:27 by maldavid         ###   ########.fr       */
+/*   Updated: 2023/06/30 02:08:29 by maldavid         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -30,7 +30,7 @@ static bool	init_all_philos(t_manager *man)
 	}
 	return (true);
 }
-
+R
 void	init_manager(t_manager *manager)
 {
 	manager->philos = malloc(sizeof(t_philo) * manager->numbers_philos);
