@@ -6,17 +6,17 @@
 #    By: maldavid <kbz_8.dev@akel-engine.com>       +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2023/06/02 17:20:17 by maldavid          #+#    #+#              #
-#    Updated: 2023/06/29 20:38:00 by maldavid         ###   ########.fr        #
+#    Updated: 2023/06/30 15:58:00 by maldavid         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
 
 NAME		= ./philo
 
-SRCS		=	srcs/main.c  \
-				srcs/philo.c  \
-				srcs/utils.c   \
-				srcs/noodles.c  \
+SRCS		=	main.c  \
+				philo.c  \
+				utils.c   \
+				noodles.c  \
 
 OBJ_DIR		= objs
 OBJS		= $(addprefix $(OBJ_DIR)/, $(SRCS:.c=.o))
@@ -31,7 +31,7 @@ ifeq ($(TOOLCHAIN), gcc)
 endif
 
 CLAGS		= -Wall -Wextra -Werror
-INCLUDES	= -I./includes
+INCLUDES	= -I./
 LIBS		= -lpthread
 
 ifeq ($(DEBUG), true)
