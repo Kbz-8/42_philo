@@ -6,7 +6,7 @@
 /*   By: maldavid <kbz_8.dev@akel-engine.com>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/02 19:55:47 by maldavid          #+#    #+#             */
-/*   Updated: 2023/06/30 15:51:16 by maldavid         ###   ########.fr       */
+/*   Updated: 2023/06/30 16:17:25 by maldavid         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -80,7 +80,7 @@ bool	init_noodles(t_noodles *noodles, char **av)
 		noodles->n_eats = ft_atoi_check(av[5], &check);
 	if (av[5] != NULL && noodles->n_eats == 0)
 		return (false);
-	noodles->philos = malloc(noodles->n_philos * sizeof(t_philo));
+	noodles->philos = malloc(noodles->n_philos * sizeof(t_philo) + 1);
 	if (noodles->philos == NULL)
 	{
 		write(2, "malloc failed in noodles creation\n", 34);
