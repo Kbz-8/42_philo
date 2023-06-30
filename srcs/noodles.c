@@ -6,7 +6,7 @@
 /*   By: maldavid <kbz_8.dev@akel-engine.com>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/02 19:55:47 by maldavid          #+#    #+#             */
-/*   Updated: 2023/06/30 01:02:37 by maldavid         ###   ########.fr       */
+/*   Updated: 2023/06/30 15:51:16 by maldavid         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,7 +20,7 @@ bool	init_philos(t_noodles *noodles)
 	i = 0;
 	while (i < noodles->n_philos)
 	{
-		noodles->philos[i].id = i + 1;
+		noodles->philos[i].id = i;
 		noodles->philos[i].last_eat = 0;
 		noodles->philos[i].r_fork = NULL;
 		noodles->philos[i].noodles = noodles;
@@ -31,7 +31,7 @@ bool	init_philos(t_noodles *noodles)
 		else
 			noodles->philos[i].r_fork = &noodles->philos[i + 1].l_fork;
 		if (pthread_create(&noodles->philos[i].thread, NULL, brain, \
-						   &noodles->philos[i]))
+							&noodles->philos[i]))
 			return (false);
 		i++;
 	}

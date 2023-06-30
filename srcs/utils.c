@@ -6,7 +6,7 @@
 /*   By: maldavid <kbz_8.dev@akel-engine.com>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/29 17:52:22 by maldavid          #+#    #+#             */
-/*   Updated: 2023/06/30 14:35:12 by maldavid         ###   ########.fr       */
+/*   Updated: 2023/06/30 15:33:22 by maldavid         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -44,7 +44,7 @@ int	ft_atoi_check(const char *str, bool *check)
 	return (n * neg);
 }
 
-void	log(t_philo *philo, char *str)
+void	cout(t_philo *philo, char *str)
 {
 	long long	time;
 
@@ -55,7 +55,7 @@ void	log(t_philo *philo, char *str)
 	pthread_mutex_unlock(&(philo->noodles->mutex_print));
 }
 
-void	ft_usleep(int ms)
+void	mssleep(int ms)
 {
 	long	time;
 

@@ -6,7 +6,7 @@
 /*   By: maldavid <kbz_8.dev@akel-engine.com>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/29 20:37:42 by maldavid          #+#    #+#             */
-/*   Updated: 2023/06/30 14:28:49 by maldavid         ###   ########.fr       */
+/*   Updated: 2023/06/30 15:48:26 by maldavid         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,13 +17,13 @@ void	*check_death(void *philo)
 	t_philo	*p;
 
 	p = (t_philo *)philo;
-	ft_usleep(p->noodles->time_to_die + 1);
+	mssleep(p->noodles->time_to_die + 1);
 	pthread_mutex_lock(&p->noodles->mutex_eat);
 	pthread_mutex_lock(&p->noodles->mutex_exit);
 	if (!end(p->noodles) && \
 		timestamp() - p->last_eat >= p->noodles->time_to_die)
 	{
-		log(p, " died");
+		cout(p, " died");
 		p->noodles->exit = true;
 	}
 	pthread_mutex_unlock(&p->noodles->mutex_eat);
@@ -34,29 +34,29 @@ void	*check_death(void *philo)
 void	take_fork(t_philo *philo)
 {
 	pthread_mutex_lock(&philo->l_fork);
-	log(philo, " has taken a fork");
+	cout(philo, " has taken a fork");
 	if (philo->noodles->n_philos == 1)
 	{
-		ft_usleep(philo->noodles->time_to_die * 2);
+		mssleep(philo->noodles->time_to_die * 2);
 		return ;
 	}
 	pthread_mutex_lock(philo->r_fork);
-	log(philo, " has taken a fork");
+	cout(philo, " has taken a fork");
 }
 
 void	eat(t_philo *philo)
 {
-	log(philo, " is eating");
-	pthread_mutex_lock(&(philo->noodles->mutex_eat));
+	cout(philo, " is eating");
+	pthread_mutex_lock(&philo->noodles->mutex_eat);
 	philo->last_eat = timestamp();
 	philo->eat_count++;
-	pthread_mutex_unlock(&(philo->noodles->mutex_eat));
-	ft_usleep(philo->noodles->time_to_eat);
-	pthread_mutex_unlock((philo->r_fork));
+	pthread_mutex_unlock(&philo->noodles->mutex_eat);
+	mssleep(philo->noodles->time_to_eat);
+	pthread_mutex_unlock(philo->r_fork);
 	pthread_mutex_unlock(&philo->l_fork);
-	log(philo, " is sleeping");
-	ft_usleep(philo->noodles->time_to_sleep);
-	log(philo, " is thinking");
+	cout(philo, " is sleeping");
+	mssleep(philo->noodles->time_to_sleep);
+	cout(philo, " is thinking");
 }
 
 void	*brain(void	*philo)
@@ -66,7 +66,7 @@ void	*brain(void	*philo)
 
 	p = (t_philo *)philo;
 	if (p->id % 2 == 0)
-		ft_usleep(p->noodles->time_to_eat / 10);
+		mssleep(p->noodles->time_to_eat / 10);
 	while (!end(p->noodles))
 	{
 		pthread_create(&death_thread, NULL, check_death, philo);
@@ -77,7 +77,6 @@ void	*brain(void	*philo)
 		{
 			pthread_mutex_lock(&p->noodles->mutex_exit);
 			p->noodles->current_n_eats++;
-			log(p, "check");
 			if (p->noodles->current_n_eats == p->noodles->n_philos)
 				p->noodles->exit = true;
 			pthread_mutex_unlock(&p->noodles->mutex_exit);
