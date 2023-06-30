@@ -6,7 +6,7 @@
 /*   By: maldavid <kbz_8.dev@akel-engine.com>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/29 17:52:22 by maldavid          #+#    #+#             */
-/*   Updated: 2023/06/30 01:31:49 by maldavid         ###   ########.fr       */
+/*   Updated: 2023/06/30 14:35:12 by maldavid         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -46,12 +46,12 @@ int	ft_atoi_check(const char *str, bool *check)
 
 void	log(t_philo *philo, char *str)
 {
-	long	time;
+	long long	time;
 
 	pthread_mutex_lock(&(philo->noodles->mutex_print));
 	time = timestamp() - philo->noodles->start_time;
-	if (!philo->noodles->exit && time >= 0 && time <= INT_MAX)
-		printf("%ld %zu %s\n", time, philo->id, str);
+	if (!philo->noodles->exit && time >= 0 && time <= LLONG_MAX)
+		printf("%lld %zu %s\n", time, philo->id, str);
 	pthread_mutex_unlock(&(philo->noodles->mutex_print));
 }
 

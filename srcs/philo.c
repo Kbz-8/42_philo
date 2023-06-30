@@ -6,7 +6,7 @@
 /*   By: maldavid <kbz_8.dev@akel-engine.com>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/29 20:37:42 by maldavid          #+#    #+#             */
-/*   Updated: 2023/06/30 02:05:31 by maldavid         ###   ########.fr       */
+/*   Updated: 2023/06/30 14:28:49 by maldavid         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,8 +23,6 @@ void	*check_death(void *philo)
 	if (!end(p->noodles) && \
 		timestamp() - p->last_eat >= p->noodles->time_to_die)
 	{
-		pthread_mutex_unlock(&p->noodles->mutex_eat);
-		pthread_mutex_unlock(&p->noodles->mutex_exit);
 		log(p, " died");
 		p->noodles->exit = true;
 	}
@@ -48,7 +46,6 @@ void	take_fork(t_philo *philo)
 
 void	eat(t_philo *philo)
 {
-	take_fork(philo);
 	log(philo, " is eating");
 	pthread_mutex_lock(&(philo->noodles->mutex_eat));
 	philo->last_eat = timestamp();
@@ -73,17 +70,16 @@ void	*brain(void	*philo)
 	while (!end(p->noodles))
 	{
 		pthread_create(&death_thread, NULL, check_death, philo);
+		take_fork(p);
 		eat(p);
 		pthread_detach(death_thread);
 		if (p->eat_count == p->noodles->n_eats)
 		{
 			pthread_mutex_lock(&p->noodles->mutex_exit);
 			p->noodles->current_n_eats++;
+			log(p, "check");
 			if (p->noodles->current_n_eats == p->noodles->n_philos)
-			{
-				pthread_mutex_unlock(&p->noodles->mutex_exit);
 				p->noodles->exit = true;
-			}
 			pthread_mutex_unlock(&p->noodles->mutex_exit);
 			return (NULL);
 		}
