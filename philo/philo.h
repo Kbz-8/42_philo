@@ -6,7 +6,7 @@
 /*   By: maldavid <kbz_8.dev@akel-engine.com>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/02 17:31:25 by maldavid          #+#    #+#             */
-/*   Updated: 2023/06/30 16:24:57 by maldavid         ###   ########.fr       */
+/*   Updated: 2023/07/01 15:32:11 by maldavid         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -54,7 +54,7 @@ typedef struct s_noodles
 }	t_noodles;
 
 long long	timestamp(void);
-void		mssleep(int ms);
+void		mssleep(int ms, t_noodles *noodles);
 void		cout(t_philo *philo, char *str);
 int			ft_atoi_check(const char *str, bool *check);
 bool		init_noodles(t_noodles *noodles, char **av);

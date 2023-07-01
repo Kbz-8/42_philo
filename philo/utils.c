@@ -6,7 +6,7 @@
 /*   By: maldavid <kbz_8.dev@akel-engine.com>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/29 17:52:22 by maldavid          #+#    #+#             */
-/*   Updated: 2023/06/30 15:33:22 by maldavid         ###   ########.fr       */
+/*   Updated: 2023/07/01 16:15:30 by maldavid         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,43 +23,39 @@ long long	timestamp(void)
 int	ft_atoi_check(const char *str, bool *check)
 {
 	long int	n;
-	int			neg;
 
 	n = 0;
-	neg = 1;
 	while (*str == ' ' || (*str >= '\t' && *str <= '\r'))
 		str++;
 	if ((*str == '+' || *str == '-'))
 		if (*str++ == '-')
-			neg = ~(neg - 1);
+			*check = true;
 	while (*str >= '0' && *str <= '9')
 		n = n * 10 + *str++ - '0';
 	while (*str)
 		if (*str++ != ' ')
 			*check = true;
-	if (neg == -1 && n < -2147483648)
-		return (0);
-	if (neg && n < -2147483648)
+	if (n < -2147483648)
 		return (-1);
-	return (n * neg);
+	return (n);
 }
 
 void	cout(t_philo *philo, char *str)
 {
 	long long	time;
 
-	pthread_mutex_lock(&(philo->noodles->mutex_print));
+	pthread_mutex_lock(&philo->noodles->mutex_print);
 	time = timestamp() - philo->noodles->start_time;
-	if (!philo->noodles->exit && time >= 0 && time <= LLONG_MAX)
+	if (!end(philo->noodles) && time >= 0 && time <= LLONG_MAX)
 		printf("%lld %zu %s\n", time, philo->id, str);
-	pthread_mutex_unlock(&(philo->noodles->mutex_print));
+	pthread_mutex_unlock(&philo->noodles->mutex_print);
 }
 
-void	mssleep(int ms)
+void	mssleep(int ms, t_noodles *noodles)
 {
 	long	time;
 
 	time = timestamp();
-	while (timestamp() - time < ms)
+	while (timestamp() - time < ms && !end(noodles))
 		usleep(ms / 10);
 }

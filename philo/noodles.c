@@ -6,7 +6,7 @@
 /*   By: maldavid <kbz_8.dev@akel-engine.com>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/02 19:55:47 by maldavid          #+#    #+#             */
-/*   Updated: 2023/06/30 16:17:25 by maldavid         ###   ########.fr       */
+/*   Updated: 2023/07/01 16:37:38 by maldavid         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -74,13 +74,13 @@ bool	init_noodles(t_noodles *noodles, char **av)
 	noodles->time_to_die = ft_atoi_check(av[2], &check);
 	noodles->time_to_eat = ft_atoi_check(av[3], &check);
 	noodles->time_to_sleep = ft_atoi_check(av[4], &check);
-	if (check)
-		return (false);
 	if (av[5] != NULL)
 		noodles->n_eats = ft_atoi_check(av[5], &check);
 	if (av[5] != NULL && noodles->n_eats == 0)
 		return (false);
-	noodles->philos = malloc(noodles->n_philos * sizeof(t_philo) + 1);
+	if (check)
+		return (false);
+	noodles->philos = malloc(noodles->n_philos * sizeof(t_philo));
 	if (noodles->philos == NULL)
 	{
 		write(2, "malloc failed in noodles creation\n", 34);
@@ -101,7 +101,6 @@ void	destroy_noodles(t_noodles *noodles)
 	while (i < noodles->n_philos)
 	{
 		pthread_mutex_destroy(noodles->philos[i].r_fork);
-		pthread_mutex_destroy(&noodles->philos[i].l_fork);
 		i++;
 	}
 	free(noodles->philos);
