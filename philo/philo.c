@@ -6,32 +6,52 @@
 /*   By: maldavid <kbz_8.dev@akel-engine.com>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/29 20:37:42 by maldavid          #+#    #+#             */
-/*   Updated: 2023/07/01 16:20:10 by maldavid         ###   ########.fr       */
+/*   Updated: 2023/07/07 13:58:25 by maldavid         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include <philo.h>
+
+bool	check_starvation(t_philo *philo)
+{
+	pthread_mutex_lock(&philo->starving_mutex);
+	if (philo->starving)
+	{
+		pthread_mutex_unlock(&philo->starving_mutex);
+		return (true);
+	}
+	pthread_mutex_unlock(&philo->starving_mutex);
+	return (false);
+}
 
 void	*check_death(void *philo)
 {
 	t_philo	*p;
 
 	p = (t_philo *)philo;
-	mssleep(p->noodles->time_to_die + 1, p->noodles);
-	pthread_mutex_lock(&p->noodles->mutex_eat);
-	if (!end(p->noodles) && \
-		timestamp() - p->last_eat >= p->noodles->time_to_die)
+	while (!end(p->noodles))
 	{
-		cout(p, " died");
-		pthread_mutex_lock(&p->noodles->mutex_exit);
-		p->noodles->exit = true;
-		pthread_mutex_unlock(&p->noodles->mutex_exit);
+		if (!check_starvation(p))
+			continue ;
+		mssleep(p->noodles->time_to_die + 1, p->noodles);
+		pthread_mutex_lock(&p->noodles->mutex_eat);
+		if (!end(p->noodles) && \
+			timestamp() - p->last_eat >= p->noodles->time_to_die)
+		{
+			cout(p, " died");
+			pthread_mutex_lock(&p->noodles->mutex_dead);
+			p->noodles->exit = true;
+			pthread_mutex_unlock(&p->noodles->mutex_dead);
+		}
+		pthread_mutex_unlock(&p->noodles->mutex_eat);
+		pthread_mutex_lock(&p->starving_mutex);
+		p->starving = false;
+		pthread_mutex_unlock(&p->starving_mutex);
 	}
-	pthread_mutex_unlock(&p->noodles->mutex_eat);
 	return (NULL);
 }
 
-void	take_fork(t_philo *philo)
+void	eat(t_philo *philo)
 {
 	pthread_mutex_lock(&philo->l_fork);
 	cout(philo, " has taken a fork");
@@ -42,10 +62,6 @@ void	take_fork(t_philo *philo)
 	}
 	pthread_mutex_lock(philo->r_fork);
 	cout(philo, " has taken a fork");
-}
-
-void	eat(t_philo *philo)
-{
 	cout(philo, " is eating");
 	pthread_mutex_lock(&philo->noodles->mutex_eat);
 	philo->last_eat = timestamp();
@@ -67,21 +83,23 @@ void	*brain(void	*philo)
 	p = (t_philo *)philo;
 	if (p->id % 2 == 0)
 		mssleep(p->noodles->time_to_eat / 10, p->noodles);
+	pthread_create(&death_thread, NULL, check_death, philo);
 	while (!end(p->noodles))
 	{
-		pthread_create(&death_thread, NULL, check_death, philo);
-		take_fork(p);
+		pthread_mutex_lock(&p->starving_mutex);
+		p->starving = true;
+		pthread_mutex_unlock(&p->starving_mutex);
 		eat(p);
-		pthread_detach(death_thread);
 		if (p->eat_count == p->noodles->n_eats)
 		{
-			pthread_mutex_lock(&p->noodles->mutex_exit);
+			pthread_mutex_lock(&p->noodles->mutex_dead);
 			p->noodles->current_n_eats++;
 			if (p->noodles->current_n_eats == p->noodles->n_philos)
 				p->noodles->exit = true;
-			pthread_mutex_unlock(&p->noodles->mutex_exit);
-			return (NULL);
+			pthread_mutex_unlock(&p->noodles->mutex_dead);
+			break ;
 		}
 	}
+	pthread_join(death_thread, NULL);
 	return (NULL);
 }

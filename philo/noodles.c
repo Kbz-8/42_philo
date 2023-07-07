@@ -6,7 +6,7 @@
 /*   By: maldavid <kbz_8.dev@akel-engine.com>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/02 19:55:47 by maldavid          #+#    #+#             */
-/*   Updated: 2023/07/01 16:37:38 by maldavid         ###   ########.fr       */
+/*   Updated: 2023/07/07 13:49:14 by maldavid         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,18 +21,17 @@ bool	init_philos(t_noodles *noodles)
 	while (i < noodles->n_philos)
 	{
 		noodles->philos[i].id = i;
+		noodles->philos[i].starving = true;
 		noodles->philos[i].last_eat = 0;
 		noodles->philos[i].r_fork = NULL;
 		noodles->philos[i].noodles = noodles;
 		noodles->philos[i].eat_count = 0;
-		pthread_mutex_init(&(noodles->philos[i].l_fork), NULL);
+		pthread_mutex_init(&noodles->philos[i].l_fork, NULL);
+		pthread_mutex_init(&noodles->philos[i].starving_mutex, NULL);
 		if (i == noodles->n_philos - 1)
 			noodles->philos[i].r_fork = &noodles->philos[0].l_fork;
 		else
 			noodles->philos[i].r_fork = &noodles->philos[i + 1].l_fork;
-		if (pthread_create(&noodles->philos[i].thread, NULL, brain, \
-							&noodles->philos[i]))
-			return (false);
 		i++;
 	}
 	return (true);
@@ -42,6 +41,14 @@ bool	wait_for_philos(t_noodles *noodles)
 {
 	int	i;
 
+	i = 0;
+	while (i < noodles->n_philos)
+	{
+		if (pthread_create(&noodles->philos[i].thread, NULL, brain, \
+							&noodles->philos[i]))
+			return (false);
+		i++;
+	}
 	i = 0;
 	while (i < noodles->n_philos)
 	{
@@ -88,7 +95,6 @@ bool	init_noodles(t_noodles *noodles, char **av)
 	}
 	pthread_mutex_init(&noodles->mutex_eat, NULL);
 	pthread_mutex_init(&noodles->mutex_dead, NULL);
-	pthread_mutex_init(&noodles->mutex_exit, NULL);
 	pthread_mutex_init(&noodles->mutex_print, NULL);
 	return (true);
 }
@@ -105,7 +111,6 @@ void	destroy_noodles(t_noodles *noodles)
 	}
 	free(noodles->philos);
 	pthread_mutex_destroy(&noodles->mutex_eat);
-	pthread_mutex_destroy(&noodles->mutex_exit);
 	pthread_mutex_destroy(&noodles->mutex_dead);
 	pthread_mutex_destroy(&noodles->mutex_print);
 }

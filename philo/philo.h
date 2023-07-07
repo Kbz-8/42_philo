@@ -6,7 +6,7 @@
 /*   By: maldavid <kbz_8.dev@akel-engine.com>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/02 17:31:25 by maldavid          #+#    #+#             */
-/*   Updated: 2023/07/01 15:32:11 by maldavid         ###   ########.fr       */
+/*   Updated: 2023/07/07 13:23:19 by maldavid         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,6 +26,7 @@
 typedef struct s_philo
 {
 	struct s_noodles	*noodles;
+	pthread_mutex_t		starving_mutex;
 	pthread_mutex_t		l_fork;
 	pthread_mutex_t		*r_fork;
 	pthread_t			thread;
@@ -33,12 +34,12 @@ typedef struct s_philo
 	size_t				eat_count;
 	size_t				id;
 	bool				is_eating;
+	bool				starving;
 }	t_philo;
 
 typedef struct s_noodles
 {
 	pthread_mutex_t	mutex_eat;
-	pthread_mutex_t	mutex_exit;
 	pthread_mutex_t	mutex_dead;
 	pthread_mutex_t	mutex_print;
 	t_philo			*philos;
