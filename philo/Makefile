@@ -6,7 +6,7 @@
 #    By: maldavid <kbz_8.dev@akel-engine.com>       +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2023/06/02 17:20:17 by maldavid          #+#    #+#              #
-#    Updated: 2023/07/07 14:01:53 by maldavid         ###   ########.fr        #
+#    Updated: 2023/07/07 15:36:39 by maldavid         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -31,7 +31,7 @@ ifeq ($(TOOLCHAIN), gcc)
 	CC = gcc
 endif
 
-CLAGS		= -Wall -Wextra -Werror
+CFLAGS		= -Wall -Wextra -Werror
 INCLUDES	= -I./
 LIBS		= -lpthread
 

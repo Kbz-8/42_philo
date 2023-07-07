@@ -6,7 +6,7 @@
 /*   By: maldavid <kbz_8.dev@akel-engine.com>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/02 19:55:47 by maldavid          #+#    #+#             */
-/*   Updated: 2023/07/07 13:49:14 by maldavid         ###   ########.fr       */
+/*   Updated: 2023/07/07 15:35:31 by maldavid         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,13 +14,13 @@
 
 bool	init_philos(t_noodles *noodles)
 {
-	int	i;
+	uint32_t	i;
 
 	noodles->start_time = timestamp();
 	i = 0;
 	while (i < noodles->n_philos)
 	{
-		noodles->philos[i].id = i;
+		noodles->philos[i].id = i + 1;
 		noodles->philos[i].starving = true;
 		noodles->philos[i].last_eat = 0;
 		noodles->philos[i].r_fork = NULL;
@@ -39,7 +39,7 @@ bool	init_philos(t_noodles *noodles)
 
 bool	wait_for_philos(t_noodles *noodles)
 {
-	int	i;
+	uint32_t	i;
 
 	i = 0;
 	while (i < noodles->n_philos)
@@ -87,12 +87,13 @@ bool	init_noodles(t_noodles *noodles, char **av)
 		return (false);
 	if (check)
 		return (false);
+	if (noodles->time_to_eat > noodles->time_to_die)
+		noodles->time_to_eat = noodles->time_to_die;
+	if (noodles->time_to_sleep > noodles->time_to_die)
+		noodles->time_to_sleep = noodles->time_to_die;
 	noodles->philos = malloc(noodles->n_philos * sizeof(t_philo));
 	if (noodles->philos == NULL)
-	{
-		write(2, "malloc failed in noodles creation\n", 34);
 		return (false);
-	}
 	pthread_mutex_init(&noodles->mutex_eat, NULL);
 	pthread_mutex_init(&noodles->mutex_dead, NULL);
 	pthread_mutex_init(&noodles->mutex_print, NULL);
@@ -101,7 +102,7 @@ bool	init_noodles(t_noodles *noodles, char **av)
 
 void	destroy_noodles(t_noodles *noodles)
 {
-	int	i;
+	uint32_t	i;
 
 	i = 0;
 	while (i < noodles->n_philos)

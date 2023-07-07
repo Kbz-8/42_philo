@@ -6,7 +6,7 @@
 /*   By: maldavid <kbz_8.dev@akel-engine.com>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/29 17:52:22 by maldavid          #+#    #+#             */
-/*   Updated: 2023/07/01 16:15:30 by maldavid         ###   ########.fr       */
+/*   Updated: 2023/07/07 15:29:45 by maldavid         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,7 +20,7 @@ long long	timestamp(void)
 	return (tv.tv_sec * 1000 + tv.tv_usec / 1000);
 }
 
-int	ft_atoi_check(const char *str, bool *check)
+unsigned int	ft_atoi_check(const char *str, bool *check)
 {
 	long int	n;
 
@@ -37,6 +37,8 @@ int	ft_atoi_check(const char *str, bool *check)
 			*check = true;
 	if (n < -2147483648)
 		return (-1);
+	if (n > 2147483647)
+		return (2147483647);
 	return (n);
 }
 
